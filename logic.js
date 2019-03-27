@@ -20,7 +20,8 @@ var database = firebase.database();
 
 //$("#train-schedule>tbody").empty();
 //initial read from database
-// database.ref().once('value',function(snapshot){
+//database.ref().once('value',function(snapshot){
+//  console.log("fired first inside once");
 //   snapshot.forEach(function(childSnapshot) {
 //        var item = childSnapshot.val();
 //        console.log("childsnapshot key: ", childSnapshot.key);
@@ -31,7 +32,7 @@ var database = firebase.database();
 //       //database.ref(item.key).update({ item.trainTimeLeft: moment(item.trainFrequency).subtract(moment(moment(Date.now())).diff(item.trainTimeStamp,"minutes"),"minutes") });
        //updateTable(item.trainName, item.destination, item.firstTrainTime, item.frequency, childSnapshot.key);
 //   });
-// });
+//});
 
 // var interval = setInterval(function(){
 //   $("#train-schedule>tbody").empty();
@@ -113,7 +114,7 @@ database.ref().on("child_added", function(snapshot,childKey) {
   console.log(sv.firstTrainTime);
   console.log(sv.frequency);
 
-  updateTable(sv.trainName, sv.destination, sv.firstTrainTime, sv.frequency, "12345");
+  updateTable(sv.trainName, sv.destination, sv.firstTrainTime, sv.frequency, snapshot.key);
 
   // Handle the errors
 }, function(errorObject) {
@@ -121,7 +122,6 @@ database.ref().on("child_added", function(snapshot,childKey) {
 });
 
 function updateTable(trainName, destination, firstTrainTime, frequency, databasekey) {
-  $("#train-schedule>tbody").empty();
 
   //logic: date doesn't matter.  get HH:MM  just divide by 24 hours.  get now.  get diff from now (HH:MM) and first time train arrives(HH:MM) in minutes. divide by frequency.
   //we have now
@@ -173,7 +173,7 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
 
   //updates the DOM
   var id = databasekey;//trainName.replace(/\s/g,'')+destination.replace(/\s/g,'')+frequency;
-  var newrow = $("<tr class="+id+">");
+  var newrow = $("<tr data-id="+id+">");
   var newth = $("<th>");
   newth.attr("scope", "row");
   newth.text(trainName);
@@ -190,11 +190,11 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
   var newtd = $("<td>");
   newtd.text(minutesAway);
   newrow.append(newtd);
-  //var newtd = $("<td>");
-  //var editid = trainName.replace(/\s/g,'')+destination.replace(/\s/g,'')+frequency+"edit";
-  //var removeid = trainName.replace(/\s/g,'')+destination.replace(/\s/g,'')+frequency+"remove";
-  //newtd.html('<button class="btn btn-primary float-right remove" value='+id+'>Remove</button><button class="btn btn-primary float-right edit" value='+editid+'>Edit</button>');
-  //newrow.append(newtd);
+  var newtd = $("<td>");
+  //var editid = id; //trainName.replace(/\s/g,'')+destination.replace(/\s/g,'')+frequency+"edit";
+  //var removeid = id; //trainName.replace(/\s/g,'')+destination.replace(/\s/g,'')+frequency+"remove";
+  newtd.html('<button class="btn btn-primary float-right remove" value='+id+'>Remove</button><button class="btn btn-primary float-right edit" value='+id+'>Edit</button>');
+  newrow.append(newtd);
   
   $("#train-schedule>tbody").append(newrow);
 
@@ -206,10 +206,40 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
     //var idtoremove = $(this).closest("tr").attr("class");
     // remove from database
     //add attribute of snapshot key to database
-    let id = $(this).closest("tr").attr("class");
+    let id = $(this).closest("tr").attr("data-id");
     console.log(id);
 
     //database.ref().doc(id).delete();
+    database.ref().update({ [id] : null })
+    //https://dev.to/aurelkurtula/introduction-to-firebases-real-time-database-89l
+    //https://softauthor.com/firebase-crud-javascript-web-tutorial-part-2-create-update-delete/#firebase-javascript-crud-delete-data
+    
+    //database.ref().on('value',function(snapshot){
+    //   snapshot.forEach(function(childSnapshot) {
+    //       var item = childSnapshot.val().trainName.replace(/\s/g,'') + childSnapshot.val().destination.replace(/\s/g,'') + childSnapshot.val().frequency;
+    //       console.log("item: "+item + "; closest tr id: "+ idtoremove);
+    //       if (item === idtoremove) {
+    //         alert("same item to remove in database");
+    //         childSnapshot.getRef().removeValue();
+    //       }
+    //   });
+    //});
+    $(this).closest('tr').remove();
+  });
+
+  $(".edit").on("click",function(){
+    //var idtoremove = $(this).closest("tr").attr("class");
+    // remove from database
+    //add attribute of snapshot key to database
+    let id = $(this).closest("tr").attr("data-id");
+    console.log(id);
+
+    //database.ref().doc(id).delete();
+    //TODO: make fields editable
+    //TODO: update fields
+    //database.ref().update({ [id] : null })
+    //https://dev.to/aurelkurtula/introduction-to-firebases-real-time-database-89l
+    //https://softauthor.com/firebase-crud-javascript-web-tutorial-part-2-create-update-delete/#firebase-javascript-crud-delete-data
     
     //database.ref().on('value',function(snapshot){
     //   snapshot.forEach(function(childSnapshot) {
