@@ -34,7 +34,35 @@ var database = firebase.database();
 //   });
 //});
 
-// var interval = setInterval(function(){
+var interval = setInterval(function(){
+  var trselector = $('#train-schedule>tbody>tr');
+  $("#train-schedule>tbody").empty();
+
+  //cycle through the table row, update table for each element in table. 
+  //alert(document.getElementById("train-schedule").childNodes[3].nodeName);
+  trselector.each(function(){
+    // $(this).find('td').each(function(){
+    //     //do your stuff, you can use $(this) to get current cell
+    id = $(this).attr("data-id");
+    //alert(id);
+    trainName = $(this).children().attr("data-trainName"); //.attr("data-trainName");
+    //alert(trainName);
+    destination = $(this).children().next().attr("data-destination");
+    firstTrainTime = $(this).children().next().next().next().attr("data-firstTrainTime");
+    frequency = $(this).children().next().next().attr("data-frequency");
+    //frequency = document.getElementById("train-schedule").childNodes[3].children[0].children[2].getAttribute("data-frequency");
+    console.log("id: ", id);
+    console.log("trainName ", trainName);
+    console.log("destination ", destination);
+    console.log("firstTrainTime: ", firstTrainTime);
+    console.log("frequency ", frequency);
+
+    updateTable(trainName, destination, firstTrainTime, frequency, id);
+
+    // })
+})
+    
+
 //   $("#train-schedule>tbody").empty();
 //   // want to put on values outside set interval functions because creates new one every time set interval fires
 //   // put timestamp somewhere, then update all rows that have time in them
@@ -52,7 +80,7 @@ var database = firebase.database();
 //     });
 //   });
 
-// },60000);
+},60000);
 
 // Use the below initialValue
 var trainName = "";
@@ -176,18 +204,23 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
   var newrow = $("<tr data-id="+id+">");
   var newth = $("<th>");
   newth.attr("scope", "row");
+  newth.attr("data-trainName", trainName);
   newth.text(trainName);
   newrow.append(newth);
   var newtd = $("<td>");
+  newtd.attr("data-destination", destination);
   newtd.text(destination);
   newrow.append(newtd);
   var newtd = $("<td>");
+  newtd.attr("data-frequency", frequency);
   newtd.text(frequency);
   newrow.append(newtd);
   var newtd = $("<td>");
+  newtd.attr("data-firstTrainTime", firstTrainTime);
   newtd.text(nextArrivalTime);
   newrow.append(newtd);
   var newtd = $("<td>");
+  newtd.attr("data-minutesAway", minutesAway);
   newtd.text(minutesAway);
   newrow.append(newtd);
   var newtd = $("<td>");
@@ -201,8 +234,9 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
   // $(editid).on("click",function(){
 
   // });
-
-  $(".remove").on("click",function(){
+}
+ 
+$(".remove").on("click",function(){
     //var idtoremove = $(this).closest("tr").attr("class");
     // remove from database
     //add attribute of snapshot key to database
@@ -251,9 +285,8 @@ function updateTable(trainName, destination, firstTrainTime, frequency, database
     //       }
     //   });
     //});
-    $(this).closest('tr').remove();
+    //$(this).closest('tr').remove();
   });
-}
 
 
 //});
