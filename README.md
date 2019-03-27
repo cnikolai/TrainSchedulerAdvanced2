@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a Train Schedule Advanced application that works with firebase.  Open the [project start page](https://cnikolai.github.io/TrainSchedulerAdvanced2/). Click on Train Scheduler.  Enter the information in the input fields.  Be sure to note the format of the inputs.  
+This project is a Train Schedule Advanced application that works with firebase.  Open the [project start page](https://cnikolai.github.io/TrainSchedulerAdvanced2/). Click on Train Scheduler.  Enter the information in the input fields.  Be sure to note the format of the inputs.  Edit puts the train information in the section below.  Edit this information.  Then click on submit and it will change your train information.  
 
 - - -
 
